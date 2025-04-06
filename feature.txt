@@ -1,0 +1,23 @@
+* Công nghệ sử dụng: laravel framework 10, bootstrap 5, mysql
+* Trang admin :
+- Có 3 table chính :
+users
+products
+categories
+
+- Chức năng :
+    - Login
+	- Logout
+	- Danh mục : 
+	     - xem danh sách, thêm, sửa, xóa, tìm kiếm, phân trang, sort theo column
+		 - Sử dụng popup trên 1 trang
+		 - Validate dữ liệu
+	- Sản phẩm : 
+	     - Xem danh sách, thêm, sửa, xóa, tìm kiếm, phân trang
+		 - Validate dữ liệu
+		 - Thêm được hình ảnh
+		 - Tìm kiếm theo id hoặc tên
+		 - Tìm kiếm theo danh mục bằng select box
+		 - Tìm kiếm bằng ajax theo tên
+		 - Import/Export CSV
+		 
