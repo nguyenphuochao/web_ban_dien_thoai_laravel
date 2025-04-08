@@ -19,3 +19,4 @@ Route::get('/', function () {
 });
 
 Route::resource('categories', CategoryController::class);
+Route::post('categories/sort', [CategoryController::class, 'sort'])->name('categories.sort');

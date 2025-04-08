@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $col = "id";
+            $col = "order_by";
             $sortType = "asc";
             $query = Category::query();
 
@@ -130,6 +130,26 @@ class CategoryController extends Controller
     {
         Category::destroy($id);
         request()->session()->put('success', 'Category deteted successfully');
+        return redirect()->route('categories.index');
+    }
+
+    public function sort(Request $request)
+    {
+
+        $index = 1;
+        $sort_data = $request->selected;
+        $sort_data = explode(",", $sort_data);
+        if (count($sort_data) == 1) {
+            request()->session()->put('success', 'Category sorted successfully');
+            return redirect()->route('categories.index');
+        }
+
+        for ($i = 0; $i < count($sort_data); $i++) {
+            $category = Category::find($sort_data[$i]);
+            $category->order_by = $index++;
+            $category->save();
+        }
+        request()->session()->put('success', 'Category sorted successfully');
         return redirect()->route('categories.index');
     }
 }
