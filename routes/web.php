@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/pass', function () {
+    return Hash::make('123456');
+});
+
 Route::get('login', [LoginController::class, 'login_form'])->name('login_form');
 Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
@@ -23,5 +29,9 @@ Route::get('/', function () {
     return redirect()->route('categories.index');
 });
 
-Route::resource('categories', CategoryController::class);
-Route::post('categories/sort', [CategoryController::class, 'sort'])->name('categories.sort');
+Route::middleware(['auth'])->group(function () {
+    Route::resource('categories', CategoryController::class);
+    Route::post('categories/sort', [CategoryController::class, 'sort'])->name('categories.sort');
+
+    Route::resource('products', ProductController::class);
+});

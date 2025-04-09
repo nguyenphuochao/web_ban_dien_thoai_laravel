@@ -8,14 +8,6 @@
             cursor: pointer;
         }
 
-        form input[type=search] {
-            height: 37px;
-            padding: 10px
-        }
-
-        #sortable div {
-            cursor: pointer;
-        }
     </style>
 @endpush
 
@@ -23,17 +15,7 @@
     <div class="mt-2">
         <h1>Category</h1>
 
-        <button class="btn btn-primary" data-bs-target="#addCategoryModal" data-bs-toggle="modal">Add</button>
-        <button class="btn btn-success px-4" data-bs-target="#sortCategoryModal" data-bs-toggle="modal">Sort</button>
-
-        @php
-            $search = request()->has('search') ? request()->input('search') : null;
-        @endphp
-        <form action="{{ route('categories.index') }}" class="d-flex align-items-center justify-content-end">
-            <label>Search:</label>
-            <input type="search" name="search" placeholder="Search ID, Name" value="{{ $search }}">
-            <button class="btn btn-outline-success">Submit</button>
-        </form>
+        <button class="btn btn-primary">Add</button>
 
         @php
             $showCount = request()->has('show-count') ? request()->input('show-count') : 5;

@@ -23,6 +23,11 @@
     <form action="{{ route('login') }}" method="POST" class="w-50 mx-auto border mt-5 p-3">
         @csrf
         <h2 class="text-center">Login</h2>
+
+        @if (session()->has('error'))
+            <div class="alert alert-danger">{{ session()->pull('error') }}</div>
+        @endif
+
         <div class="mb-3">
             <label for="InputEmail" class="form-label">Email</label>
             <input type="text" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="InputEmail" name="email">

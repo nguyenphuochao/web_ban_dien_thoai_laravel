@@ -37,7 +37,13 @@ class CategoryController extends Controller
                 });
             }
 
-            $categories = $query->orderBy($col, $sortType)->paginate(5)->withQueryString();
+            // hiển thị show-count
+            $show_count = 5;
+            if ($request->has('show-count')) {
+                $show_count = $request->input('show-count');
+            }
+
+            $categories = $query->orderBy($col, $sortType)->paginate($show_count)->withQueryString();
 
             $data = [
                 'categories' => $categories
@@ -142,13 +148,13 @@ class CategoryController extends Controller
     {
 
         $index = 1;
-        $sort_data = $request->selected;
-        $sort_data = explode(",", $sort_data);
-        if (count($sort_data) == 1) {
+        $sort_data = $request->input('selected');
+        if ($sort_data == NULL) {
             request()->session()->put('success', 'Category sorted successfully');
             return redirect()->route('categories.index');
         }
 
+        $sort_data = explode(",", $sort_data);
         for ($i = 0; $i < count($sort_data); $i++) {
             $category = Category::find($sort_data[$i]);
             $category->sort_num = $index++;

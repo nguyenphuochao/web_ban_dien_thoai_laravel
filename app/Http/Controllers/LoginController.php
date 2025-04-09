@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -31,7 +32,20 @@ class LoginController extends Controller
         $this->validate($request, $this->pattern, $this->messenger, $this->customName);
 
         // success
+        $credentials = $request->only(['email', 'password']);
+        $credentials['status'] = 1;
+
+        if (!Auth::attempt($credentials)) {
+            $request->session()->put('error', 'Sai thông tin đăng nhập');
+            return redirect()->back();
+        }
+
+        return redirect()->route('categories.index');
     }
 
-    public function logout() {}
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('login_form');
+    }
 }
