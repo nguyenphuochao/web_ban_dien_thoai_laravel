@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $col = "order_by";
+            $col = "sort_num";
             $sortType = "asc";
             $query = Category::query();
 
@@ -75,9 +75,14 @@ class CategoryController extends Controller
         );
 
         // success
+        $categories = Category::all();
+        $count = $categories->count();
+
         Category::create([
-            'name' => $request->name
+            'name'     => $request->name,
+            'sort_num' => $count + 1
         ]);
+
         request()->session()->put('success', 'Category created successfully');
         return redirect()->route('categories.index');
     }
@@ -146,7 +151,7 @@ class CategoryController extends Controller
 
         for ($i = 0; $i < count($sort_data); $i++) {
             $category = Category::find($sort_data[$i]);
-            $category->order_by = $index++;
+            $category->sort_num = $index++;
             $category->save();
         }
         request()->session()->put('success', 'Category sorted successfully');

@@ -160,7 +160,7 @@
                         @csrf
                         <div id="sortable">
                             @php
-                                $categories = App\Models\Category::orderBy('order_by')->get();
+                                $categories = App\Models\Category::orderBy('sort_num')->get();
                             @endphp
                             @foreach ($categories as $category)
                                 <div data-id="{{ $category->id }}" class="bg-success p-2 mb-2 text-light">
