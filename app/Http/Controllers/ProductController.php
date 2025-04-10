@@ -10,10 +10,17 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $conds = [];
 
-        $products = Product::paginate(5);
+        if($request->has('s_ID')) {
+            $s_ID = $request->input('s_ID');
+            $conds[] = ["id", $s_ID];
+        }
+
+        $products = Product::where($conds)->paginate(5)->withQueryString();
+
         $data = [
             "products" => $products
         ];

@@ -18,21 +18,17 @@
         <br>
         <button class="btn btn-success mt-3 search"><i class="fa-solid fa-plus"></i> Search</button>
 
+        {{-- Form mutiple search --}}
         <form id="form-search" action="#" class="w-50 mt-2" style="display: none">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label>ID</label>
-                    <input type="text" name="ID" class="form-control">
-                </div>
-
-                <div class="col-md-6 mb-3">
                     <label>Product Name</label>
-                    <input type="text" name="product_name" class="form-control">
+                    <input type="text" name="s_product_name" class="form-control">
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label>Category Name</label>
-                    <select name="category_name" class="form-select form-control">
+                    <select name="s_category_name" class="form-select form-control">
                         <option value=""></option>
                         <option value="1">Cat1</option>
                         <option value="2">Cat2</option>
@@ -43,9 +39,27 @@
                 <div class="col-md-6 mb-3">
                     <label>Price</label>
                     <div class=" d-flex align-items-center">
-                        <input type="text" name="from_price" class="form-control flex-grow-1">
+                        <input type="text" name="s_from_price" class="form-control flex-grow-1">
                         <span class="mx-2">~</span>
-                        <input type="text" name="to_price" class="form-control flex-grow-1">
+                        <input type="text" name="s_to_price" class="form-control flex-grow-1">
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Status</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                            <label class="form-check-label" for="inlineCheckbox1">Active</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1">
+                            <label class="form-check-label" for="inlineCheckbox2">Not active</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option1" checked>
+                            <label class="form-check-label" for="inlineCheckbox3">All</label>
+                        </div>
                     </div>
                 </div>
 
@@ -85,15 +99,19 @@
             </thead>
             <tbody>
                 @if ($products->count() > 0)
-                    @foreach ($products as $product)
+                    @foreach ($products as $index => $product)
                         <tr>
-                            <th>#</th>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Category Name</th>
-                            <th>Price</th>
-                            <th>Image</th>
-                            <th>Status</th>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $product->id }}</td>
+                            <td>{{ $product->name }}</td>
+                            <td>{{ $product->category->name }}</td>
+                            <td>{{ $product->price }}</td>
+                            <td></td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input fs-5" type="checkbox" id="flexSwitchCheckDefault" {{ $product->status == 1 ? 'checked' : null }}>
+                                </div>
+                            </td>
                         </tr>
                     @endforeach
                 @else

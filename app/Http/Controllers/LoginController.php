@@ -60,7 +60,7 @@ class LoginController extends Controller
 
     protected function changeExpireCookieRemember()
     {
-        $rememberTokenExpireMinutes = 2;
+        $rememberTokenExpireMinutes = 1440;
         $rememberTokenName          = Auth::getRecallerName();
         $rememberCookie             = Auth::getCookieJar()->queued($rememberTokenName);
         if ($rememberCookie) {
