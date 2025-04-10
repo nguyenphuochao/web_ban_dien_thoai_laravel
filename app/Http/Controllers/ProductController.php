@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -14,15 +15,32 @@ class ProductController extends Controller
     {
         $conds = [];
 
-        if($request->has('s_ID')) {
-            $s_ID = $request->input('s_ID');
-            $conds[] = ["id", $s_ID];
+        $s_product_name = $request->input('s_product_name');
+        if ($request->has('s_product_name') && $s_product_name != "") {
+            $conds[] = ["name", "LIKE", "%" . $s_product_name . "%"];
+        }
+
+        $s_category_id = $request->input('s_category_id');
+        if ($request->has('s_category_id') && $s_category_id != "") {
+            $conds[] = ["category_id", "=", $s_category_id];
+        }
+
+        $s_from_price = $request->input('s_from_price');
+        if ($request->has('s_from_price') && $s_from_price != "") {
+            $conds[] = ["price", ">=", $s_from_price];
+        }
+
+        $s_to_price = $request->input('s_to_price');
+        if ($request->has('s_to_price') && $s_to_price != "") {
+            $conds[] = ["price", "<=", $s_to_price];
         }
 
         $products = Product::where($conds)->paginate(5)->withQueryString();
+        $categories = Category::orderBy("sort_num", "ASC")->get();
 
         $data = [
-            "products" => $products
+            "products"   => $products,
+            "categories" => $categories
         ];
         return view('product.index', $data);
     }

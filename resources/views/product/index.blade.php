@@ -16,32 +16,47 @@
 
         <button class="btn btn-primary">Add</button>
         <br>
-        <button class="btn btn-success mt-3 search"><i class="fa-solid fa-plus"></i> Search</button>
+        @php
+            $s_product_name = request()->has('s_product_name') ? request()->input('s_product_name') : null;
+            $s_category_id = request()->has('s_category_id') ? request()->input('s_category_id') : null;
+            $s_from_price = request()->has('s_from_price') ? request()->input('s_from_price') : null;
+            $s_to_price = request()->has('s_to_price') ? request()->input('s_to_price') : null;
+
+            $checked = false;
+            if ($s_product_name || $s_category_id || $s_from_price || $s_to_price) {
+                $checked = true;
+            }
+        @endphp
+
+        <button class="btn btn-success mt-3 search"><i class="fa-solid {{ $checked ? 'fa-minus' : 'fa-plus' }}"></i> Search</button>
 
         {{-- Form mutiple search --}}
-        <form id="form-search" action="#" class="w-50 mt-2" style="display: none">
+        <form id="form-search" action="#" class="w-50 mt-2" style="display: {{ $checked ? 'block' : 'none' }}">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label>Product Name</label>
-                    <input type="text" name="s_product_name" class="form-control">
+                    <input type="text" name="s_product_name" class="form-control" value="{{ $s_product_name }}">
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label>Category Name</label>
-                    <select name="s_category_name" class="form-select form-control">
+                    <select name="s_category_id" class="form-select form-control">
                         <option value=""></option>
-                        <option value="1">Cat1</option>
-                        <option value="2">Cat2</option>
-                        <option value="3">Cat3</option>
+                        @foreach ($categories as $category)
+                            <option {{ $s_category_id == $category->id ? 'selected' : null }} value="{{ $category->id }}">
+                                {{ $category->name }}</option>
+                        @endforeach
                     </select>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label>Price</label>
                     <div class=" d-flex align-items-center">
-                        <input type="text" name="s_from_price" class="form-control flex-grow-1">
+                        <input type="text" name="s_from_price" class="form-control flex-grow-1"
+                            value="{{ $s_from_price }}">
                         <span class="mx-2">~</span>
-                        <input type="text" name="s_to_price" class="form-control flex-grow-1">
+                        <input type="text" name="s_to_price" class="form-control flex-grow-1"
+                            value="{{ $s_to_price }}">
                     </div>
                 </div>
 
@@ -109,7 +124,8 @@
                             <td></td>
                             <td>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input fs-5" type="checkbox" id="flexSwitchCheckDefault" {{ $product->status == 1 ? 'checked' : null }}>
+                                    <input class="form-check-input fs-5" type="checkbox" data-id="{{ $product->id }}"
+                                        {{ $product->status == 1 ? 'checked' : null }}>
                                 </div>
                             </td>
                         </tr>
