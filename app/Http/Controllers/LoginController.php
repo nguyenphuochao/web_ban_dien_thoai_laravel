@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class LoginController extends Controller
 {
@@ -33,12 +34,20 @@ class LoginController extends Controller
 
         // success
         $credentials = $request->only(['email', 'password']);
-        $credentials['status'] = 1;
+        $remember_me = $request->has('remember_me') ? true : false;
 
-        if (!Auth::attempt($credentials)) {
-            $request->session()->put('error', 'Sai thông tin đăng nhập');
+        if (!Auth::attempt($credentials, $remember_me)) {
+            $request->session()->put('error', 'Account is invalid');
             return redirect()->back();
         }
+
+        $user = Auth::user();
+        if ($user->status != 1) {
+            $request->session()->put('error', 'Account is blocked');
+            return redirect()->back();
+        }
+
+        $this->changeExpireCookieRemember();
 
         return redirect()->route('categories.index');
     }
@@ -47,5 +56,16 @@ class LoginController extends Controller
     {
         Auth::logout();
         return redirect()->route('login_form');
+    }
+
+    protected function changeExpireCookieRemember()
+    {
+        $rememberTokenExpireMinutes = 2;
+        $rememberTokenName          = Auth::getRecallerName();
+        $rememberCookie             = Auth::getCookieJar()->queued($rememberTokenName);
+        if ($rememberCookie) {
+            $cookieValue = $rememberCookie->getValue();
+            \Cookie::queue($rememberTokenName, $cookieValue, $rememberTokenExpireMinutes);
+        }
     }
 }

@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,5 +20,34 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        // create data categories
+        DB::table('categories')->insert([
+            [
+                "id" => 1,
+                "name" => "LG",
+                "sort_num" => 1
+            ],
+            [
+                "id" => 2,
+                "name" => "Nokia",
+                "sort_num" => 2
+            ],
+            [
+                "id" => 3,
+                "name" => "HTC",
+                "sort_num" => 3
+            ],
+        ]);
+
+        // create data users
+        DB::table('users')->insert([
+            [
+                "id" => 1,
+                "name" => "HaoNP",
+                "email" => "haonp@gmail.com",
+                "password" => Hash::make('123456')
+            ]
+        ]);
     }
 }

@@ -7,20 +7,59 @@
         table thead th {
             cursor: pointer;
         }
-
     </style>
 @endpush
 
 @section('content')
     <div class="mt-2">
-        <h1>Category</h1>
+        <h1>Product</h1>
 
         <button class="btn btn-primary">Add</button>
+        <br>
+        <button class="btn btn-success mt-3 search"><i class="fa-solid fa-plus"></i> Search</button>
+
+        <form id="form-search" action="#" class="w-50 mt-2" style="display: none">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>ID</label>
+                    <input type="text" name="ID" class="form-control">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Product Name</label>
+                    <input type="text" name="product_name" class="form-control">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Category Name</label>
+                    <select name="category_name" class="form-select form-control">
+                        <option value=""></option>
+                        <option value="1">Cat1</option>
+                        <option value="2">Cat2</option>
+                        <option value="3">Cat3</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Price</label>
+                    <div class=" d-flex align-items-center">
+                        <input type="text" name="from_price" class="form-control flex-grow-1">
+                        <span class="mx-2">~</span>
+                        <input type="text" name="to_price" class="form-control flex-grow-1">
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button class="btn btn-success btn-sm px-4"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+
+            </div>
+        </form>
 
         @php
             $showCount = request()->has('show-count') ? request()->input('show-count') : 5;
         @endphp
-        <form action="{{ request()->fullUrlWithQuery(['show-count' => '']) }}">
+        <form action="{{ request()->fullUrlWithQuery(['show-count' => '']) }}" class="mt-4">
             <label>Show-entries :</label>
             <select name="show-count" id="show-count" style="width: 60px;padding-left: 5px">
                 <option {{ $showCount == 5 ? 'selected' : null }} value="5">5</option>
@@ -34,211 +73,56 @@
 
         <table class="table table-hover mt-4">
             <thead>
-                @php
-                    $sort = request()->has('sort') ? request('sort') : null;
-                @endphp
                 <tr>
                     <th>#</th>
-                    <th data-url="{{ request()->fullUrlWithQuery(['sort' => 'id']) }}">ID <i
-                            class="fa-solid {{ $sort == 'id-asc' ? 'fa-arrow-up' : null }} {{ $sort == 'id-desc' ? 'fa-arrow-down' : null }}"></i>
-                    </th>
-                    <th data-url="{{ request()->fullUrlWithQuery(['sort' => 'alpha']) }}">Name <i
-                            class="fa-solid {{ $sort == 'alpha-asc' ? 'fa-arrow-up' : null }} {{ $sort == 'alpha-desc' ? 'fa-arrow-down' : null }}"></i>
-                    </th>
-                    <th></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category Name</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                @if ($categories->count() > 0)
-                    @php
-                        $index = 1;
-                    @endphp
-                    @foreach ($categories as $category)
+                @if ($products->count() > 0)
+                    @foreach ($products as $product)
                         <tr>
-                            <th scope="row">{{ $index++ }}</th>
-                            <td>{{ $category->id }}</td>
-                            <td>{{ $category->name }}</td>
-                            <td>
-                                <button data-id="{{ $category->id }}" class="btn btn-warning edit"
-                                    data-bs-target="#editCategoryModal" data-bs-toggle="modal">Edit</button>
-                                <button data-id="{{ $category->id }}" class="btn btn-danger delete"
-                                    data-bs-target="#deleteModal" data-bs-toggle="modal">Delete</button>
-                            </td>
+                            <th>#</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category Name</th>
+                            <th>Price</th>
+                            <th>Image</th>
+                            <th>Status</th>
                         </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="4" class="text-center">No data
-                        <td>
+                        <td colspan="7" class="text-center">No data</td>
                     </tr>
                 @endif
-
-
             </tbody>
         </table>
+
         {{-- Total Items --}}
         <div class="total-items">
-            Total : {{ $categories->total() }}
+            Total : {{ $products->total() }}
         </div>
 
         {{-- Pagination --}}
         <div class="d-flex justify-content-end">
-            {{ $categories->links() }}
+            {{ $products->links() }}
         </div>
     </div>
-
-    {{-- POPUP FORM ADD --}}
-    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Category</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="categoryAddForm" action="{{ route('categories.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="nameInput" class="form-label">Name</label>
-                            <input type="name" class="form-control" id="nameInput" name="name"
-                                placeholder="Enter name">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button"
-                        onclick="event.preventDefault(); document.getElementById('categoryAddForm').submit();"
-                        class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- POPUP FORM EDIT --}}
-    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Category</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="categoryEditForm" action="#" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="mb-3">
-                            <label for="nameInput" class="form-label">Name</label>
-                            <input type="name" class="form-control" id="nameInput" name="name"
-                                placeholder="Enter name">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button"
-                        onclick="event.preventDefault(); document.getElementById('categoryEditForm').submit();"
-                        class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- POPUP FORM SORT --}}
-    <div class="modal fade" id="sortCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Sort Category</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="categorySortForm" action="{{ route('categories.sort') }}" method="POST">
-                        @csrf
-                        <div id="sortable">
-                            @php
-                                $categories = App\Models\Category::orderBy('sort_num')->get();
-                            @endphp
-                            @foreach ($categories as $category)
-                                <div data-id="{{ $category->id }}" class="bg-success p-2 mb-2 text-light">
-                                    {{ $category->name }}</div>
-                            @endforeach
-                        </div>
-                        <input type="text" name="selected" hidden>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button"
-                        onclick="event.preventDefault(); document.getElementById('categorySortForm').submit();"
-                        class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 @endsection
 
 @push('scripts')
     <script>
         $(function() {
-            // Sort columns category
-            $('.table th').click(function() {
-                var data_url = $(this).data('url');
-                if (!data_url) {
-                    return;
-                }
-                if (!$(this).children("i").hasClass("fa-arrow-up")) {
-                    $(this).children("i").addClass("fa-arrow-up");
-                    window.location.href = data_url + "-asc";
-                } else {
-                    $(this).children("i").addClass("fa-arrow-down");
-                    $(this).children("i").removeClass("fa-arrow-up");
-                    window.location.href = data_url + "-desc";
-                }
-            });
-
-            // Edit Category
-            $(".edit").click(function() {
-                var id = $(this).data('id');
-                $.ajax({
-                    url: "/categories/" + id + "/edit",
-                    success: function(data) {
-                        $("#categoryEditForm input[name=name]").val(data); // update input name
-                        $("#categoryEditForm").attr("action", "/categories/" +
-                            id); // update action
-                    }
-                });
-            });
-        });
-
-        // Delete Category
-        $(".delete").click(function() {
-            var id = $(this).data('id');
-            $("#delete-id").text(id);
-            $("#deleteForm").attr("action", "/categories/" + id);
-        });
-
-        // Sortable
-        $("#sortable").sortable({
-            update: function(e, ui) {
-                var selected = [];
-                var sortable = $("#sortable div");
-                for (let index = 0; index < sortable.length; index++) {
-                    var element = sortable[index];
-                    selected.push($(element).data('id'));
-                }
-                $("input[name=selected]").val(selected);
-            }
-        });
-
-        // show-entries
-        $("#show-count").change(function() {
-            var data_url = $(this).parent().attr('action');
-            var show_count = $(this).val();
-            var url = data_url.replace('show-count=',"show-count=" + show_count);
-            window.location.href = url;
+            $(".search").click(function() {
+                $("#form-search").toggle(300);
+                $(this).children("i").toggleClass("fa-plus fa-minus");
+            })
         });
     </script>
 @endpush

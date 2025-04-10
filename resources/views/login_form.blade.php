@@ -45,8 +45,8 @@
         </div>
 
         <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="remember-me">
-            <label class="form-check-label" for="remember-me">Remember Me</label>
+            <input type="checkbox" class="form-check-input" value="1" name="remember_me" id="remember_me">
+            <label class="form-check-label" for="remember_me">Remember Me</label>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
