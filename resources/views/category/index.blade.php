@@ -66,43 +66,21 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                @if ($categories->count() > 0)
-                    @php
-                        $index = 1;
-                    @endphp
-                    @foreach ($categories as $category)
-                        <tr>
-                            <th scope="row">{{ $index++ }}</th>
-                            <td>{{ $category->id }}</td>
-                            <td>{{ $category->name }}</td>
-                            <td>
-                                <button data-id="{{ $category->id }}" class="btn btn-warning edit"
-                                    data-bs-target="#editCategoryModal" data-bs-toggle="modal">Edit</button>
-                                <button data-id="{{ $category->id }}" class="btn btn-danger delete"
-                                    data-bs-target="#deleteModal" data-bs-toggle="modal">Delete</button>
-                            </td>
-                        </tr>
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan="4" class="text-center">No data
-                        <td>
-                    </tr>
-                @endif
+            <tbody class="item">
 
+                @include('category.item')
 
             </tbody>
         </table>
+
         {{-- Total Items --}}
-        <div class="total-items">
+        <div class="total-item">
             Total : {{ $categories->total() }}
         </div>
 
         {{-- Pagination --}}
-        <div class="d-flex justify-content-end">
-            {{ $categories->links() }}
-        </div>
+        @include('category.pagination')
+
     </div>
 
     {{-- POPUP FORM ADD --}}
@@ -114,20 +92,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="categoryAddForm" action="{{ route('categories.store') }}" method="POST">
+                    <form id="addFormCategory" action="{{ route('categories.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label for="nameInput" class="form-label">Name</label>
                             <input type="name" class="form-control" id="nameInput" name="name"
                                 placeholder="Enter name">
+                            <div class="invalid-feedback"></div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button"
-                        onclick="event.preventDefault(); document.getElementById('categoryAddForm').submit();"
-                        class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary handleAddForm">
+                        Save
+                    </button>
+                    @include('layout.loading')
                 </div>
             </div>
         </div>
@@ -163,8 +143,7 @@
     </div>
 
     {{-- POPUP FORM SORT --}}
-    <div class="modal fade" id="sortCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="sortCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -217,6 +196,47 @@
                 }
             });
 
+            // Add Category
+            $(".handleAddForm").click(function() {
+                var name = $("#addFormCategory input[name=name]").val();
+
+                if (name == "") {
+                    $("#addFormCategory .invalid-feedback").text('Name is required');
+                    $("#addFormCategory input[name=name]").addClass('is-invalid');
+                    return;
+                }
+
+                $(".loading").css('display', 'block');
+                $(this).addClass("d-none");
+
+                $.ajax({
+                        type: "POST",
+                        url: "/categories",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            name: name
+                        },
+                    })
+                    .done(function(data) {
+
+                        $(".item").html(data.item);
+                        $(".total-item").html(data.totalItem);
+                        $(".pagination").html(data.pagination);
+
+                        $("#addCategoryModal").modal('hide');
+                        $(".loading").css('display', 'none');
+                        $(".handleAddForm").removeClass('d-none');
+                        $("#addFormCategory input[name=name]").val('');
+                    })
+                    .fail(function(jqXHR, textStatus) {
+                        var errorMessage = JSON.parse(jqXHR.responseText);
+                        $("#addFormCategory .invalid-feedback").text(errorMessage.message);
+                        $("#addFormCategory input[name=name]").addClass('is-invalid');
+                        $(".loading").css('display', 'none');
+                        $(".handleAddForm").removeClass('d-none');
+                    });
+            });
+
             // Edit Category
             $(".edit").click(function() {
                 var id = $(this).data('id');
@@ -229,34 +249,34 @@
                     }
                 });
             });
-        });
 
-        // Delete Category
-        $(".delete").click(function() {
-            var id = $(this).data('id');
-            $("#delete-id").text(id);
-            $("#deleteForm").attr("action", "/categories/" + id);
-        });
+            // Delete Category
+            $(".delete").click(function() {
+                var id = $(this).data('id');
+                $("#delete-id").text(id);
+                $("#deleteForm").attr("action", "/categories/" + id);
+            });
 
-        // Sortable
-        $("#sortable").sortable({
-            update: function(e, ui) {
-                var selected = [];
-                var sortable = $("#sortable div");
-                for (let index = 0; index < sortable.length; index++) {
-                    var element = sortable[index];
-                    selected.push($(element).data('id'));
+            // Sortable
+            $("#sortable").sortable({
+                update: function(e, ui) {
+                    var selected = [];
+                    var sortable = $("#sortable div");
+                    for (let index = 0; index < sortable.length; index++) {
+                        var element = sortable[index];
+                        selected.push($(element).data('id'));
+                    }
+                    $("input[name=selected]").val(selected);
                 }
-                $("input[name=selected]").val(selected);
-            }
-        });
+            });
 
-        // show-entries
-        $("#show-count").change(function() {
-            var data_url = $(this).parent().attr('action');
-            var show_count = $(this).val();
-            var url = data_url.replace('show-count=',"show-count=" + show_count);
-            window.location.href = url;
+            // show-entries
+            $("#show-count").change(function() {
+                var data_url = $(this).parent().attr('action');
+                var show_count = $(this).val();
+                var url = data_url.replace('show-count=', "show-count=" + show_count);
+                window.location.href = url;
+            });
         });
     </script>
 @endpush

@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // create data categories
+        // categories
         DB::table('categories')->insert([
             [
                 "id" => 1,
@@ -38,9 +38,19 @@ class DatabaseSeeder extends Seeder
                 "name" => "HTC",
                 "sort_num" => 3
             ],
+            [
+                "id" => 4,
+                "name" => "OPPO",
+                "sort_num" => 4
+            ],
+            [
+                "id" => 5,
+                "name" => "Apple",
+                "sort_num" => 5
+            ],
         ]);
 
-        // create data users
+        // users
         DB::table('users')->insert([
             [
                 "id" => 1,

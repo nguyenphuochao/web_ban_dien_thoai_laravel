@@ -21,7 +21,7 @@ Route::get('/pass', function () {
     return Hash::make('123456');
 });
 
-Route::get('login', [LoginController::class, 'login_form'])->name('login_form');
+Route::get('login', [LoginController::class, 'loginForm'])->name('loginForm');
 Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 

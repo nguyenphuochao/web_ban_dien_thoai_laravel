@@ -64,16 +64,12 @@
                     <label>Status</label>
                     <div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                            <label class="form-check-label" for="inlineCheckbox1">Active</label>
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" checked>
+                            <label class="form-check-label" for="inlineCheckbox1">Activate</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1">
-                            <label class="form-check-label" for="inlineCheckbox2">Not active</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option1" checked>
-                            <label class="form-check-label" for="inlineCheckbox3">All</label>
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1" checked>
+                            <label class="form-check-label" for="inlineCheckbox2">Deactivate</label>
                         </div>
                     </div>
                 </div>

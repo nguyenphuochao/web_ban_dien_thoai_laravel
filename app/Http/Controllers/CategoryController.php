@@ -89,8 +89,17 @@ class CategoryController extends Controller
             'sort_num' => $count + 1
         ]);
 
-        request()->session()->put('success', 'Category created successfully');
-        return redirect()->route('categories.index');
+        $categories = Category::orderBy('sort_num', 'asc')->paginate(5)->withQueryString();
+
+        $item = view('category.item', ["categories" => $categories])->render();
+        $pagination = view('category.pagination', ["categories" => $categories])->render();
+        $totalItem = $categories->total();
+
+        return response()->json([
+            'item' => $item,
+            'pagination' => $pagination,
+            'totalItem' => $totalItem
+        ]);
     }
 
     /**

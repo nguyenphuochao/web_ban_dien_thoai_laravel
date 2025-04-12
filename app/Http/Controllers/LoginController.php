@@ -23,9 +23,9 @@ class LoginController extends Controller
         'password' => 'Password'
     ];
 
-    public function login_form()
+    public function loginForm()
     {
-        return view('login_form');
+        return view('loginForm');
     }
 
     public function login(Request $request)
