@@ -227,6 +227,9 @@
                         $(".loading").css('display', 'none');
                         $(".handleAddForm").removeClass('d-none');
                         $("#addFormCategory input[name=name]").val('');
+
+                        $(".message").addClass('alert alert-success');
+                        $(".message").text("Category created successfully");
                     })
                     .fail(function(jqXHR, textStatus) {
                         var errorMessage = JSON.parse(jqXHR.responseText);

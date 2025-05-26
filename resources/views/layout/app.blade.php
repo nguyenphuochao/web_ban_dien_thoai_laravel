@@ -31,7 +31,9 @@
 <body class="container">
     @include('layout.header')
 
-    @include('layout.message')
+    <div class="message">
+        @include('layout.message')
+    </div>
 
     @yield('content')
 

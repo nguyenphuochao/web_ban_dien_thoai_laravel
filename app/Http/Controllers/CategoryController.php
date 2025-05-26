@@ -91,6 +91,8 @@ class CategoryController extends Controller
 
         $categories = Category::orderBy('sort_num', 'asc')->paginate(5)->withQueryString();
 
+        $request->session()->put('success', 'Category created successfully');
+
         $item = view('category.item', ["categories" => $categories])->render();
         $pagination = view('category.pagination', ["categories" => $categories])->render();
         $totalItem = $categories->total();
